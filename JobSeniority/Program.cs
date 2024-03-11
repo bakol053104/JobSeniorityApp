@@ -21,10 +21,10 @@ void MainUserInterface()
         switch (Console.ReadLine())
         {
             case "1":
-                EmmployeeInMemory("1");
+                AddEmployee("1");
                 break;
             case "2":
-                EmployeeInFile("2");
+                AddEmployee("2");
                 break;
             case "Q":
             case "q":
@@ -37,7 +37,7 @@ void MainUserInterface()
     }
 }
 
-void EmmployeeInMemory(string menuOption)
+void AddEmployee(string menuOption)
 {
     var endProgramm = false;
     while (!endProgramm)
@@ -55,9 +55,10 @@ void EmmployeeInMemory(string menuOption)
                 case "y":
                     try
                     {
-                        var employeeMemory = new EmployeeInMemory(inputName, inputSurname);
-                        AddDuration(employeeMemory);
-                        employeeMemory.ShowStatistics();
+                        EmployeeBase employee = menuOption == "1" ?
+                            new EmployeeInMemory(inputName, inputSurname) :
+                            new EmployeeInFile(inputName, inputSurname);
+                        AddDurationsAndShowResult(employee);
                     }
                     catch (Exception exception)
                     {
@@ -91,58 +92,10 @@ void EmmployeeInMemory(string menuOption)
     }
 }
 
-void EmployeeInFile(string menuOption)
+void AddDurationsAndShowResult(EmployeeBase employee)
 {
-    var endMethod = false;
-    while (!endMethod)
-    {
-        GetDataFromUser(out string inputName, out string inputSurname, menuOption);
-
-        if (IsInputStringValid(inputName) && IsInputStringValid(inputSurname))
-        {
-            ConversionStringFirstCapitalLetterOnly(ref inputName);
-            ConversionStringFirstCapitalLetterOnly(ref inputSurname);
-
-            switch (DisplaySelectionWithDataEmployee(inputName, inputSurname))
-            {
-                case "Y":
-                case "y":
-                    try
-                    {
-                        var employeeFile = new EmployeeInFile(inputName, inputSurname);
-                        AddDuration(employeeFile);
-                        employeeFile.ShowStatistics();
-                    }
-                    catch (Exception exception)
-                    {
-                        DisplayExceptionMessage(exception.Message);
-                    }
-                    finally
-                    {
-                        WaitForKeyPress();
-                    }
-                    break;
-                case "N":
-                case "n":
-                    break;
-                default:
-                    endMethod = true;
-                    break;
-            }
-        }
-        else
-        {
-            switch (DisplaySelectionWithInvalidDataEmployee())
-            {
-                case "Q":
-                case "q":
-                    endMethod = true;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+    AddDuration(employee);
+    employee.ShowStatistics();
 }
 
 void AddDuration(EmployeeBase employee)
@@ -247,7 +200,7 @@ bool IsStringWithPolishLettersOnly(string inputstring)
 
 bool IsInputStringValid(string inputstring)
 {
-    return IsStringWithPolishLettersOnly(inputstring) && !string.IsNullOrEmpty(inputstring) && !string.IsNullOrEmpty(inputstring);
+    return IsStringWithPolishLettersOnly(inputstring) && !string.IsNullOrEmpty(inputstring);
 }
 
 void EmployeeDurationAdded(object sender, EventArgs args)

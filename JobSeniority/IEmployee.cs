@@ -17,5 +17,6 @@ namespace JobSeniorityApp
         Statistics GetStatistics();
 
         public void ShowStatistics();
+
     }
 }
