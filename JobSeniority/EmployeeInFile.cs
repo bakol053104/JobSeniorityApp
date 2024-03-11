@@ -12,12 +12,6 @@ namespace JobSeniorityApp
        : base(name, surname)
         {
             fileNameForDuration = name + surname + fileAddString;
-
-            if (File.Exists(fileNameForDuration))
-            {
-                File.Delete(fileNameForDuration);
-            }
-
         }
 
         public override void AddDuration(DateOnly beginDate, DateOnly endDate)
@@ -45,7 +39,6 @@ namespace JobSeniorityApp
                     throw new Exception($"\tPodane daty zawierają się w poprzednich okresach pracy\n");
                 }
             }
-
         }
 
         public override Statistics GetStatistics()
